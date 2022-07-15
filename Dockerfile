@@ -34,6 +34,10 @@ RUN bundle config set force_ruby_platform true
 RUN bundle install -j4
 RUN apk del build-packs
 
+COPY package.json ${ROOT}
+COPY yarn.lock ${ROOT}
+RUN yarn install
+
 COPY . ${ROOT}
 
 # Add a script to be executed every time the container starts.
@@ -43,4 +47,4 @@ ENTRYPOINT ["entrypoint.sh"]
 EXPOSE 3000
 
 # Start the main process.
-CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD ["bundle", "exec", "foreman", "start", "-f", "Procfile.dev"]
